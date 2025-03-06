@@ -21,19 +21,19 @@ This repository contains a comprehensive analysis of precision differences betwe
 
 ### Basic Precision Comparison
 
-![Basic Precision Comparison](depth_precision_comparison_en.png)
+![Basic Precision Comparison](analysis_files/depth_precision_comparison_en.png)
 
 This chart shows the fundamental difference in precision distribution between R16F and R16Unorm formats. Note how R16F provides dramatically higher precision in the small value region (< 0.03), which is critical for SSAO applications.
 
 ### Linear Eye Depth Analysis with Various Far Plane Settings
 
-![Linear Eye Depth Analysis](eye_depth_analysis_with_1000m.png)
+![Linear Eye Depth Analysis](analysis_files/eye_depth_analysis_with_1000m.png)
 
 This analysis demonstrates how the precision advantage of R16F extends as the Far Plane increases. With a 1000m Far Plane (bottom row), R16F dominates the entire SSAO-relevant range (0-10m).
 
 ### Comprehensive Analysis Summary
 
-![Comprehensive Analysis](depth_precision_summary_with_1000m.png)
+![Comprehensive Analysis](analysis_files/depth_precision_summary_with_1000m.png)
 
 This chart summarizes all key findings, showing precision distribution, relative advantage in the SSAO range, and crossover points for different Far Plane settings.
 
@@ -83,19 +83,30 @@ For SSAO-relevant near-depth ranges (0-10m):
    - Applying a non-linear transformation (like square root) to redistribute precision
    - Using a custom encoding/decoding scheme to improve near-field precision
 
-## Repository Contents
+## Repository Structure
 
-### Python Scripts
-- `depth_precision_analysis.py` - Basic comparison of R16F vs R16Unorm precision
-- `depth_precision_analysis_en.py` - English version of basic comparison
-- `eye_depth_analysis.py` - Analysis of Linear Eye Depth with various Far Plane settings
-- `generate_summary_report.py` - Comprehensive analysis and report generation
-
-### Analysis Reports
+### Markdown Reports
+- `README.md` - This file, containing a complete analysis summary with visualizations
 - `depth_precision_report.md` and `depth_precision_report_en.md` - Initial analysis reports
 - `depth_precision_report_with_1000m.md` and `depth_precision_report_with_1000m_en.md` - Updated reports including 1000m Far Plane
-- `depth_format_analysis_report.html` - HTML report of initial findings
-- `depth_format_analysis_report_with_1000m.html` - HTML report including 1000m Far Plane analysis
 
-### Dependencies
-- `requirements.txt` - Python dependencies for running the analysis scripts 
+### Analysis Files Directory (`analysis_files/`)
+- **Python Scripts**
+  - `depth_precision_analysis.py` - Basic comparison of R16F vs R16Unorm precision
+  - `depth_precision_analysis_en.py` - English version of basic comparison
+  - `eye_depth_analysis.py` - Analysis of Linear Eye Depth with various Far Plane settings
+  - `generate_summary_report.py` - Comprehensive analysis and report generation
+
+- **Visualization Charts**
+  - `depth_precision_comparison.png` and `depth_precision_comparison_en.png` - Basic precision comparison
+  - `eye_depth_analysis.png` - Linear Eye Depth analysis with standard Far Planes
+  - `eye_depth_analysis_with_1000m.png` - Linear Eye Depth analysis including 1000m Far Plane
+  - `depth_precision_summary.png` - Comprehensive results visualization
+  - `depth_precision_summary_with_1000m.png` - Comprehensive results including 1000m Far Plane
+
+- **HTML Reports**
+  - `depth_format_analysis_report.html` - HTML report of initial findings
+  - `depth_format_analysis_report_with_1000m.html` - HTML report including 1000m Far Plane analysis
+
+- **Dependencies**
+  - `requirements.txt` - Python dependencies for running the analysis scripts 
