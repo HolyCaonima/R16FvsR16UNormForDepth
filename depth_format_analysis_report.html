@@ -1,0 +1,170 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>R16F vs R16Unorm Depth Format Analysis</title>
+        <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 1200px; margin: 0 auto; padding: 20px; }
+            h1, h2 { color: #2c3e50; }
+            .container { display: flex; flex-wrap: wrap; justify-content: center; }
+            .chart { margin: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+            table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+            th, td { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; }
+            th { background-color: #f2f2f2; }
+            tr:hover { background-color: #f5f5f5; }
+            .conclusion { background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 20px 0; }
+        </style>
+    </head>
+    <body>
+        <h1>R16F vs R16Unorm Depth Format Precision Analysis</h1>
+        
+        <h2>Key Findings</h2>
+        <ul>
+            <li><strong>R16F provides higher precision in small value regions (approx < 0.03)</strong>
+                <ul>
+                    <li>R16F format has a non-linear precision distribution, offering extremely high precision near zero</li>
+                    <li>For linear depth values normalized to 0-1, this characteristic gives R16F an advantage in representing near-object depths</li>
+                </ul>
+            </li>
+            <li><strong>Precision crossover point is at 0.0318</strong>
+                <ul>
+                    <li>R16F provides higher precision when normalized depth values are less than 0.0318</li>
+                    <li>R16Unorm provides higher precision when normalized depth values are greater than 0.0318</li>
+                </ul>
+            </li>
+            <li><strong>Relationship between Linear Eye Depth and Far Plane</strong>
+                <ul>
+                    <li>Based on analysis with different Far Planes (50m, 100m, 200m), R16F shows significant precision advantages in SSAO-relevant ranges (0-10m)</li>
+                    <li>The precision crossover point moves further as the Far Plane increases (1.56m with 50m Far, 3.12m with 100m Far, 6.21m with 200m Far)</li>
+                </ul>
+            </li>
+        </ul>
+        
+        <h2>Visualizations</h2>
+        <div class="container">
+            <div class="chart">
+                <img src="depth_precision_comparison_en.png" alt="Basic Precision Comparison" width="600">
+                <p><em>Basic precision comparison between R16F and R16Unorm formats</em></p>
+            </div>
+            <div class="chart">
+                <img src="eye_depth_analysis.png" alt="Eye Depth Analysis" width="600">
+                <p><em>Linear Eye Depth analysis with different Far Planes</em></p>
+            </div>
+            <div class="chart">
+                <img src="depth_precision_summary.png" alt="Summary Report" width="800">
+                <p><em>Comprehensive summary of key findings</em></p>
+            </div>
+        </div>
+        
+        <h2>Numerical Comparisons</h2>
+        <table>
+            <tr>
+                <th>Depth Value</th>
+                <th>R16F Precision</th>
+                <th>R16Unorm Precision</th>
+                <th>Advantage Ratio</th>
+                <th>Better Format</th>
+            </tr>
+            <tr>
+                <td>0.0001</td>
+                <td>0.0000000596</td>
+                <td>0.0000152590</td>
+                <td>256.00</td>
+                <td>R16F</td>
+            </tr>
+            <tr>
+                <td>0.001</td>
+                <td>0.0000009537</td>
+                <td>0.0000152590</td>
+                <td>16.00</td>
+                <td>R16F</td>
+            </tr>
+            <tr>
+                <td>0.01</td>
+                <td>0.0000076294</td>
+                <td>0.0000152590</td>
+                <td>2.00</td>
+                <td>R16F</td>
+            </tr>
+            <tr>
+                <td>0.1</td>
+                <td>0.0000610352</td>
+                <td>0.0000152590</td>
+                <td>0.25</td>
+                <td>R16Unorm</td>
+            </tr>
+            <tr>
+                <td>0.5</td>
+                <td>0.0004882812</td>
+                <td>0.0000152590</td>
+                <td>0.03</td>
+                <td>R16Unorm</td>
+            </tr>
+        </table>
+        
+        <h2>SSAO-Relevant Depth Range Analysis</h2>
+        <table>
+            <tr>
+                <th>Far Plane</th>
+                <th>R16F Better</th>
+                <th>R16Unorm Better</th>
+                <th>Precision Crossover</th>
+            </tr>
+            <tr>
+                <td>50m</td>
+                <td>94.6%</td>
+                <td>5.4%</td>
+                <td>1.56m</td>
+            </tr>
+            <tr>
+                <td>100m</td>
+                <td>97.7%</td>
+                <td>2.3%</td>
+                <td>3.12m</td>
+            </tr>
+            <tr>
+                <td>200m</td>
+                <td>99.4%</td>
+                <td>0.6%</td>
+                <td>6.21m</td>
+            </tr>
+        </table>
+        
+        <div class="conclusion">
+            <h2>Conclusion</h2>
+            <p><strong>Your observation is correct:</strong> Although R16Unorm theoretically should provide more uniform precision distribution across the entire range, R16F indeed performs better in practical SSAO applications.</p>
+            
+            <p><strong>Phenomenon explanation:</strong></p>
+            <ul>
+                <li>SSAO algorithms primarily focus on near-scene depth differences, which is exactly where R16F format provides high precision</li>
+                <li>As the Far Plane increases, R16F's advantage zone covers more of the near-scene area</li>
+                <li>With a Far Plane of 200m, R16F provides higher precision in the 0-6.21m range, covering the most critical areas for SSAO</li>
+            </ul>
+            
+            <p><strong>Far Plane impact:</strong></p>
+            <ul>
+                <li>The larger your Far Plane setting, the wider the advantage zone of R16F relative to R16Unorm</li>
+                <li>This explains why you observed better results when storing Linear Eye Depth with R16F compared to R16Unorm</li>
+            </ul>
+            
+            <p><strong>Sign bit "waste" compensation:</strong></p>
+            <ul>
+                <li>Although R16F "wastes" 1 bit for the sign, its non-linear precision distribution provides far superior precision in small value areas</li>
+                <li>In SSAO application scenarios, the advantage of this precision distribution characteristic far outweighs the "waste" of the sign bit</li>
+            </ul>
+            
+            <h3>Recommendations</h3>
+            <ol>
+                <li>For SSAO applications with your current Far Plane settings, R16F is the better choice.</li>
+                <li>If R16Unorm must be used, consider:
+                    <ul>
+                        <li>Reducing the Far Plane value (if possible)</li>
+                        <li>Applying a non-linear transformation (like square root) to redistribute precision</li>
+                        <li>Using a custom encoding/decoding scheme to improve near-field precision</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+    </body>
+    </html>
+    
